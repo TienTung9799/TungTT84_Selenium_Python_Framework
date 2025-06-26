@@ -1,12 +1,9 @@
 import pytest
-from tests.basetest import BaseTest
+from tests.basetest import driver 
 from pages.loginpage import LoginPage
-import time
+from config.account_config import orangehrm_config
 
-class TestLogin(BaseTest):
-    def test_login_successful(self):
-        login_page = LoginPage(self.driver)
-        login_page.enter_username("Admin")
-        login_page.enter_password("admin123")
-        login_page.click_login()
-        time.sleep(10)
+class TestLogin:
+    def test_valid_login(self, driver):
+        login_page = LoginPage(driver)
+        login_page.login_successfull(orangehrm_config.USERNAME, orangehrm_config.PASSWORD)
