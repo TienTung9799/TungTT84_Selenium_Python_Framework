@@ -11,7 +11,7 @@ import allure
 def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
-    setattr(item, "rep_call" + rep.when, rep)  # Ví dụ: rep_callsetup, rep_callcall
+    setattr(item, "rep_call" + rep.when, rep) 
 
 class BaseTest:
     @pytest.fixture(scope="class", autouse=True)
