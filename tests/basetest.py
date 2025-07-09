@@ -1,13 +1,33 @@
-# tests/basetest.py
+import time
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from config.account_config import orangehrm_config
-@pytest.fixture
-def driver():
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    driver.get(orangehrm_config.BASE_URL)
-    driver.maximize_window()
-    yield driver
-    driver.quit()
+from utilities.config_reader import ConfigReader
+import allure
+
+# Hook
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_call" + rep.when, rep)  # Ví dụ: rep_callsetup, rep_callcall
+
+class BaseTest:
+    @pytest.fixture(scope="class", autouse=True)
+    def setup(self, request):
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.driver.maximize_window()
+        self.driver.get(ConfigReader.get_base_url())
+        request.cls.driver = self.driver
+        yield
+
+        # Screenshoot if fail
+        if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
+            allure.attach(
+                self.driver.get_screenshot_as_png(),
+                name=f"failed_{request.node.name}",
+                attachment_type=allure.attachment_type.PNG
+            )
+
+        self.driver.quit()

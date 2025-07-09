@@ -17,10 +17,10 @@ class LoginPage(BasePage):
         self.wait_for_element(*self.login_btn).click()
 
     def verify_dashboard_title(self):
-         self.wait_for_element(*self.dashboard_title).is_displayed
+         dashboard_title = self.wait_for_element(*self.dashboard_title).is_displayed()
+         return dashboard_title
 
     def login_successfull(self, username, password):
         self.enter_username(username)
         self.enter_password(password)
         self.click_login()
-        self.verify_dashboard_title()
