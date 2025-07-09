@@ -23,8 +23,4 @@ class LoginPage(BasePage):
     def login_successfull(self, username, password):
         self.enter_username(username)
         self.enter_password(password)
-<<<<<<< HEAD
         self.click_login()
-=======
-        self.click_login()
->>>>>>> 672f63833a03a3b7cdff04e50cdbb7b82976f5e8
